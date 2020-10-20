@@ -1,0 +1,356 @@
+﻿@namespace Munchkin.Components
+@using Munchkin.Data
+
+@*Boutton retour*@
+<div style="background:#121212;  padding:10px; height: 78px; margin-bottom:15px; float:left" class="mat-layout-grid mat-elevation-z24">
+    <button style="background-color: transparent; border: none;" @onclick="Return"> <img src="Images/spyke.png" style="height: 55px" /> </button>
+</div>
+
+@* Apercu Joueur *@
+<div style="background:#121212; padding:15px; margin-left:105px; margin-bottom:15px;" class="mat-layout-grid mat-elevation-z24">
+
+    <div style="margin:0px; display:inline-flex">
+        <div style="background-image: url(Icon/shield-white.svg); text-align: center; font-size: 30px; color: #121212; width: 45px; margin-right: 15px; height: 45px">
+            @Joueur.Niveau
+        </div>
+        <h2 style="color: white; margin:0; line-height: unset; ">@Joueur.Nom</h2>
+    </div>
+
+    <div style=" margin: 0px 5px 0px 0px; display: grid; float: left ">
+        <button class="incrementbutton" @onclick="() => Joueur.Niveau++">
+            <img src="Icon/plus-white.svg" />
+        </button>
+        <button class="incrementbutton" @onclick="() => Joueur.Niveau--">
+            <img src="Icon/minus.svg" />
+        </button>
+    </div>
+
+    <div style="position: fixed; display:inline-flex; height:unset; left: 45%; top: 40px;">
+
+        @*Pioche*@
+        <button class="incrementbutton" style="height:50px; margin:0px 10px 0px 10px; width:50px" @onclick="() => SelectionneTypePioche()">
+            <img src="Icon/pick.svg" />
+        </button>
+
+        @*Defausse*@
+        <button class="incrementbutton" style="height:50px; margin:0px 10px 0px 10px; width:50px" @onclick="() => SelectionneTypeDefausse()">
+            <img src="Icon/trash.svg" />
+        </button>
+
+        @*De*@
+        <button class="incrementbutton" style="height:50px; margin:0px 10px 0px 10px; width:50px" @onclick="() => AfficheDe()">
+            <img src="Icon/dice.svg" />
+        </button>
+    </div>
+
+    <div style=" margin: 0px 0px 0px 5px; display: grid; float: right ">
+        <button class="incrementbutton" @onclick="() => Joueur.ForceObjets++">
+            <img src="Icon/plus-white.svg" />
+        </button>
+        <button class="incrementbutton" @onclick="() => Joueur.ForceObjets--">
+            <img src="Icon/minus.svg" />
+        </button>
+    </div>
+
+    <div style="margin: 0px; float: right; display: inline-flex">
+        <h2 style="color: white; margin: 0;  line-height: unset;">
+            @Joueur.PuissanceTotale
+        </h2>
+        <img src="Icon/sword-white.svg" style="margin-left:10px; width: 45px; height:45px" />
+    </div>
+</div>
+
+@*Liste des autres joueurs*@
+<div>
+    <div class="flex-container-horizontal" style="justify-content: space-evenly; margin-bottom:35px">
+        @foreach (Joueur joueur in munchkinService.Joueurs.Except(new List<Joueur> { Joueur }))
+        {
+            <button @onclick="@(() => RegarderCartesJoueur(joueur))" style="background-color:transparent; border-radius:5%; border-style:ridge; padding:15px">
+                <div class="mat-layout-grid" style="display: inline-flex; padding: 5px 0 0 0">
+                    <div style="background-image: url(Icon/shield-black.svg); color:white; padding:0;  text-align: center; margin-right:10px; font-size: 25px; width: 40px; height: 40px">
+                        @joueur.Niveau
+                    </div>
+                    <p style="font-size:28px; ">@joueur.Nom</p>
+                </div>
+                <div style="padding:0px; height:40px; padding:2px" class="mat-layout-grid">
+                    <div class="flex-container-horizontal">
+                        @foreach (Carte carte in joueur.Main)
+                        {
+                            <MatCard Style="background-color:black; margin-left:2px; margin-right:2px;" class="demo-mat-card">
+                                <MatCardContent Style="position: relative; width: 100%;">
+                                    <img style="height:35px" src="@(carte is CarteDonjon ? "/Cartes/Donjon/Dos.png" : "/Cartes/Tresor/Dos.png")">
+                                </MatCardContent>
+                            </MatCard>
+                        }
+                    </div>
+                </div>
+
+                <div style="padding:0px; height:40px; padding:2px" class="mat-layout-grid">
+                    <div class="flex-container-horizontal">
+                        @foreach (Carte carte in joueur.Equipement)
+                        {
+                            <MatCard Style="background-color:black; margin-left:2px; margin-right:2px;" class="demo-mat-card">
+                                <MatCardContent Style="position: relative; width: 100%;">
+                                    <img style="height:35px; opacity:@(carte.Activee ? "1" : "0.5")" src=@carte.ImageURL />
+                                </MatCardContent>
+                            </MatCard>
+                        }
+                    </div>
+                </div>
+            </button>
+        }
+    </div>
+</div>
+
+
+    @*Pioche Tresor*@
+    <div style=" float: left; background-color: black;">
+        <div style="position: relative; width: 100%;">
+            <img style="height:180px" src="/Cartes/Tresor/Dos.png" />
+            <button class="button" @onclick="@(() => munchkinService.NouvelleCarteTresor(Joueur))" style="transform: translate(-50%, 10%);">
+                <img style="width:60px;  margin:15px 30px;" src="Icon/hidden.svg" />
+            </button>
+            <button class="button" @onclick="@(() => munchkinService.NouvelleCarteTresor(null))" style="top:50%; transform: translate(-50%, 5%);">
+                <img style="width:60px;  margin:15px 30px" src="Icon/visible.svg" />
+            </button>
+        </div>
+    </div>
+
+    @*Pioche Donjon*@
+    <div style=" float:right; background-color:black;">
+        <div style=" position: relative; width: 100%; ">
+            <img style="height:180px" src="/Cartes/Donjon/Dos.png" />
+            <button class="button" @onclick="@(() => munchkinService.NouvelleCarteDonjon(Joueur))" style="transform: translate(-50%, 10%);">
+                <img style="width: 60px; margin: 15px 30px;" src="Icon/hidden.svg" />
+            </button>
+            <button class="button" @onclick="@(() => munchkinService.NouvelleCarteDonjon(null))" style="top:50%; transform: translate(-50%, 5%);">
+                <img style="width:60px; margin:15px 30px" src="Icon/visible.svg" />
+            </button>
+        </div>
+    </div>
+
+    @*Cartes Visibles*@
+    <div class="flex-container-horizontal" style="flex-flow:wrap">
+        @foreach (Carte carte in munchkinService.CartesVisibles)
+        {
+            <VueCarteVisible Joueur="Joueur" Carte="carte"></VueCarteVisible>
+        }
+    </div>
+
+<div>
+    @if (_showHand)
+    {
+        @*Cartes Main*@
+        <div class="mat-layout-grid bottomcontainer">
+            <div class="flex-container-horizontal">
+                @foreach (Carte carte in Joueur.Main)
+                {
+                    <Draggable Data="@(Joueur.Main.IndexOf(carte))">
+                        <DropTarget T="int" Drop="@((int index) => Joueur.BougeCarteMain(index,Joueur.Main.IndexOf(carte)))">
+                            <VueCarteMain Joueur="Joueur" Carte="carte"></VueCarteMain>
+                        </DropTarget>
+                    </Draggable>
+                }
+            </div>
+        </div>
+        <button @onclick="() =>_showHand = !_showHand" class="togglebutton">
+            <div id="coloredDivTop">
+                <img src="Icon/hand-white.svg" style="height:40px" />
+            </div>
+            <div id="uncoloredDiv">
+                <img src="Icon/helmet-black.svg" style="height:40px" />
+            </div>
+        </button>
+    }
+    else
+    {
+        @*Cartes Equipement*@
+        <div class="mat-layout-grid bottomcontainer">
+            <div class="flex-container-horizontal">
+                @foreach (Carte carte in Joueur.Equipement)
+                {
+                    <Draggable Data="@(Joueur.Equipement.IndexOf(carte))">
+                        <DropTarget T="int" Drop="@((int index) => Joueur.BougeCarteEquipement(index,Joueur.Equipement.IndexOf(carte)))">
+                            <VueCarteEquipement Joueur="Joueur" Carte="carte"></VueCarteEquipement>
+                        </DropTarget>
+                    </Draggable>
+                }
+            </div>
+        </div>
+        <button @onclick="() =>_showHand = !_showHand" class="togglebutton">
+            <div id="uncoloredDiv">
+                <img src="Icon/hand-black.svg" style="height:40px" />
+            </div>
+            <div id="coloredDivBottom">
+                <img src="/Icon/helmet-white.svg" style="height: 40px" />
+            </div>
+        </button>
+    }
+</div>
+
+
+
+
+@*Vue Autre Joueur*@
+
+@if (_joueurRegarde != null)
+{
+    <MatDialog CanBeClosed="false" @bind-IsOpen="_afficheAutreJoueur">
+        <MatDialogContent>
+            <div class="mat-layout-grid" style="line-height:1.4">
+                <div style="margin:0px; display:inline-flex">
+                    <div style="background-image: url(Icon/shield-black.svg); text-align: center; font-size: 30px; color: white; width: 45px; margin-right: 15px; height: 45px">
+                        @_joueurRegarde.Niveau
+                    </div>
+                    <h2 style="color: black; margin:0; line-height: unset; ">@_joueurRegarde.Nom</h2>
+                </div>
+
+                <div style="margin: 0px; float: right; display: inline-flex">
+                    <h2 style=" color: black; margin: 0; line-height: unset;">
+                        @_joueurRegarde.PuissanceTotale
+                    </h2>
+                    <img src="Icon/sword-black.svg" style="margin-left:10px; width: 45px; height:45px" />
+                </div>
+            </div>
+            <VueAutreJoueur JoueurRegardant="Joueur" JoueurCible="_joueurRegarde"></VueAutreJoueur>
+        </MatDialogContent>
+        <MatDialogActions>
+            <MatButton OnClick="() => _afficheAutreJoueur = false">OK</MatButton>
+        </MatDialogActions>
+    </MatDialog>
+}
+
+
+@*Selectionne type de carte*@
+<MatDialog CanBeClosed="true" @bind-IsOpen="_selectionneTypeDefausse">
+    <SelectCardType CardTypeSelected="SelectedCarteTypeChanged" />
+</MatDialog>
+
+@*Vue Defausse*@
+<MatDialog CanBeClosed="false" @bind-IsOpen="_afficheDefausse">
+    <MatDialogContent>
+        <VueDefausse DefausseType="_selectedCarteType" Joueur="Joueur" />
+    </MatDialogContent>
+    <MatDialogActions>
+        <MatButton OnClick="() => _afficheDefausse = false">OK</MatButton>
+    </MatDialogActions>
+</MatDialog>
+
+@*Vue Pioche*@
+<MatDialog CanBeClosed="false" @bind-IsOpen="@_affichePioche">
+    <MatDialogContent>
+        <VuePioche DefausseType="_selectedCarteType" Joueur="Joueur" />
+    </MatDialogContent>
+    <MatDialogActions>
+        <MatButton OnClick="() => _affichePioche = false">OK</MatButton>
+    </MatDialogActions>
+</MatDialog>
+
+@*Vue De*@
+<MatDialog @bind-IsOpen="_afficheDe">
+    <MatDialogContent>
+        <Dice AfficheResultat="@_resultatDe" ALanceLeDe="JoueurALanceLeDe" />
+    </MatDialogContent>
+</MatDialog>
+
+
+
+
+
+<style>
+
+    .flex-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        height: 100%;
+    }
+
+    .flex-container-horizontal > div {
+        margin-left: 5px;
+        margin-right: 5px;
+    }
+
+    .flex-container-horizontal {
+        display: flex;
+        justify-content: center;
+        height: 100%;
+    }
+
+    .button {
+        border: none;
+        opacity: 0.5;
+        left: 50%;
+        position: absolute;
+        background-color: transparent;
+    }
+
+        .button:hover {
+            opacity: 1
+        }
+
+    .togglebutton {
+        background-color: #D4CFBD;
+        border: none;
+        position: fixed;
+        left: 25px;
+        bottom: 25px;
+        display: grid;
+        padding: 0px;
+        border-radius: 20px;
+    }
+
+    #coloredDivTop {
+        background-color: #625956;
+        padding: 20px;
+        border-radius: 20px 20px 0px 0px;
+    }
+
+    #coloredDivBottom {
+        background-color: #625956;
+        padding: 20px;
+        border-radius: 0px 0px 20px 20px;
+    }
+
+    #uncoloredDiv {
+        padding: 20px;
+    }
+
+    .bottomcontainer {
+        position: fixed;
+        overflow: overlay;
+        padding: 5px;
+        width: 75%;
+        margin-left: 11%;
+        bottom: 1.1rem;
+    }
+
+    .incrementbutton {
+        height: 25px;
+        width: 25px;
+        background: transparent;
+        border: none;
+    }
+
+    .mdc-dialog .mdc-dialog__surface {
+        max-width: none;
+    }
+
+    *:focus {
+        outline: none;
+    }
+
+/*    #list {
+        height: 200px;
+        width: 1800px;
+        border-radius: 50%;
+        position: relative;
+    }
+
+    .list-item {
+        list-style: none;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+    }*/
+</style>

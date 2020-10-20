@@ -1,0 +1,119 @@
+﻿@page "/"
+@using Munchkin.Service
+@using Munchkin.Data
+@using Munchkin.Components
+@using MatBlazor
+
+@if (_joueurSelectionne == null)
+{
+    
+    <div style="margin:150px; display: grid;">
+
+        <img src="Images/munchkin.png" class="center" style="width: 600px;" />
+
+        <div class="center" style="padding:50px">
+
+            @if(!_selectionneJoueur && !_creeNouveauJoueur)
+            {
+            <button class="menu-button" @onclick="() => _selectionneJoueur = true" style="float: left;">
+                <img src="Icon/play.svg" class="menu-image" />
+                <p class="menu-txt">Rejoindre</p>
+            </button>
+
+            <button class="menu-button" @onclick="() => NouvellePartie()" style="float: right;">
+                <img src="Icon/plus-black.svg" class="menu-image" />
+                <p class="menu-txt">Nouvelle Partie</p>
+            </button>
+            }
+            else if(_selectionneJoueur)
+            {
+            <div style="display: flex; flex-flow: row wrap; justify-content: center;">
+                @foreach (Joueur joueur in munchkinService.Joueurs)
+                    {
+                <button class="menu-button" @onclick="@(() =>JoueurSelectionne(joueur))">
+                    <img src="Icon/user.svg" class="menu-image" />
+                    <p class="menu-txt">@joueur.Nom</p>
+                </button>
+                    }
+                <button style="background-color:#3C2418" class="menu-button" @onclick="@(() => CreeNouveauJoueur())">
+                    <img src="Icon/plus-white.svg" class="menu-image" />
+                    <p class="menu-txt" style="color:white;">Nouveau Joueur</p>
+                </button>
+            </div>
+            }
+            else
+            {
+        <EditForm  Model="@_joueur" OnValidSubmit="CreationNouveauJoueur">
+            <DataAnnotationsValidator />
+            <div asp-validation-summary="All" class="text-danger"></div>
+
+            @*Nouveau Joueur *@
+            <div id="test" class="center" style="width:600px;">
+                <InputText @attributes="InputAttributes" class="menu-txt" style="width: 475px; border: solid; padding-left: 5px; border-radius: 5px;" placeholder="Nom du joueur" @bind-Value="_joueur.Nom" />
+                <button type="submit" class="menu-txt" style="background-color: #3C2418;  border-radius: 10px; margin: 5px; border: none;width: 60px; height: 50px; color: white;">OK</button>
+                <ValidationMessage For="@(() => _joueur.Nom)" />
+            </div>
+        </EditForm>
+            }
+        </div>
+    </div>
+}
+else
+{
+    <VueJoueurCirculaire ExitClicked="ExitClicked" Joueur="_joueurSelectionne" />
+}
+
+
+
+<style>
+    .center {
+        margin: auto;
+        padding: 20px;
+    }
+
+    .menu-button {
+        color: #3C2418;
+        background-color: transparent;
+        border: solid;
+        margin: 20px;
+        width: 240px;
+        border-radius: 40px;
+    }
+
+    .menu-image {
+        height: 60px;
+        margin: 20px
+    }
+
+    .mdc-dialog .mdc-dialog__surface {
+        max-width: none;
+    }
+
+    .menu-txt {
+        font-size: 26px;
+    }
+
+    .form-control.invalid {
+        border-color: #dc3545;
+    }
+
+    .form-control.valid {
+        border-color: transparent;
+    }
+
+    .validation-message {
+        width: 100%;
+        margin-top: .25rem;
+        font-size: 22px;
+        color: #dc3545;
+    }
+
+
+    *:focus {
+        outline: none;
+    }
+</style>
+
+
+
+

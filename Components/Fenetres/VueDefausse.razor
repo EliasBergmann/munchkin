@@ -1,0 +1,69 @@
+﻿@namespace Munchkin.Components
+@using Munchkin.Data
+
+<div style="max-width:1200px;">
+    <div class="mat-layout-grid customcontainer">
+        <div class="flex-container-horizontal " style="display:inline-flex">
+            @if (DefausseType == typeof(CarteDonjon))
+            {
+                @foreach (CarteDonjon carte in munchkinService.DefaussesCartesDonjon)
+                {
+                    <MatCard Style="background-color:black" class="demo-mat-card">
+                        <MatCardContent Style="position: relative; width: 100%;">
+                            <img style="height:180px;" @onclick="@(() => AfficheCarteEnGrand(carte))" src="@carte.ImageURL">
+                            <div class="flex-container" style="transform: translateX(-50%); height:unset; left: 50%; bottom : 30%; position: absolute; background-color: transparent;">
+                                <button class="buttontest" @onclick="@(() => PrendCarteDefausseDonjon(carte, Joueur))" style="background:#25793D">
+                                    <img src="Icon/steal.svg" />
+                                </button>
+                            </div>
+                        </MatCardContent>
+                    </MatCard>
+                }
+            }
+            else
+            {
+                @foreach (CarteTresor carte in munchkinService.DefausseCartesTresor)
+                {
+                    <MatCard Style="background-color:black" class="demo-mat-card">
+                        <MatCardContent Style="position: relative; width: 100%;">
+                            <img style="height:180px;" @onclick="@(() => AfficheCarteEnGrand(carte))" src="@carte.ImageURL">
+                            <div class="flex-container" style="transform: translateX(-50%); height:unset; left: 50%; bottom : 30%; position: absolute; background-color: transparent;">
+                                <button class="buttontest" @onclick="@(() => PrendCarteDeDefausseTresor(carte, Joueur))" style="background:#25793D">
+                                    <img src="Icon/steal.svg" />
+                                </button>
+                            </div>
+                        </MatCardContent>
+                    </MatCard>
+                }
+            }
+        </div>
+    </div>
+</div>
+
+
+@if (_carteAffichee != null)
+{
+    <MatDialog @bind-IsOpen="_afficheCarteEnGrand">
+        <MatDialogContent Style="background:black">
+            <MatCard Style="background-color:black" class="demo-mat-card">
+                <MatCardContent Style="position: relative; width: 100%;">
+                    <img style="height:500px ; width:350px" @onclick="@(() => _afficheCarteEnGrand = false)" src="@_carteAffichee.ImageURL">
+                    <div class="flex-container-horizontal">
+                        @if (munchkinService.DefausseCartesTresor.Contains(_carteAffichee))
+                        {
+                            <button class="buttontestbig" @onclick="@(() => PrendCarteDeDefausseTresor(_carteAffichee as CarteTresor, Joueur))" style="background:#25793D">
+                                <img src="Icon/steal.svg" />
+                            </button>
+                        }
+                        else
+                        {
+                            <button class="buttontestbig" @onclick="@(() => PrendCarteDefausseDonjon(_carteAffichee as CarteDonjon, Joueur))" style="background:#25793D">
+                                <img src="Icon/steal.svg" />
+                            </button>
+                        }
+                    </div>
+                </MatCardContent>
+            </MatCard>
+        </MatDialogContent>
+    </MatDialog>
+}

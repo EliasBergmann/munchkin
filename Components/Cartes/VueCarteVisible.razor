@@ -1,0 +1,80 @@
+﻿@namespace Munchkin.Components
+@using  Munchkin.Data
+
+@*Carte Petite*@
+<MatCard Style="background-color:black; margin-bottom:10px" class="demo-mat-card">
+    <MatCardContent Style="position: relative; width: 100%;">
+        <img style="height:180px" @onclick="() => _afficheCarteEnGrand = true" src=@Carte.ImageURL>
+        <div class="flex-container"
+             style="transform: translateX(-50%); height:unset; left: 50%; bottom : 10%; position: absolute; background-color: transparent;">
+            <button class="buttontest" @onclick="@(() => munchkinService.TransfertCarte(Carte,null,Joueur))" style="background:#25793D">
+                <img src="Icon/steal.svg" />
+            </button>
+            <button class="buttontest" @onclick="@(() => _envoiCarte = true)" style="background:#BA4625 ">
+                <img src="Icon/send.svg" />
+            </button>
+            <button class="buttontest" @onclick="@(() => munchkinService.DefausseCarte(Carte))" style="background:#625956; ">
+                <img src="Icon/delete.svg" />
+            </button>
+        </div>
+    </MatCardContent>
+</MatCard>
+
+@*Carte En Grand*@
+<MatDialog @bind-IsOpen="@_afficheCarteEnGrand">
+    <MatDialogContent Style="background:black">
+        <img @onclick="() => _afficheCarteEnGrand = false" style="height:500px ; width:350px" src=@Carte.ImageURL>
+        <div class="flex-container-horizontal">
+            <button class="buttontestbig" @onclick="@(() => munchkinService.TransfertCarte(Carte,null,Joueur))" style="background:#25793D">
+                <img src="Icon/steal.svg" />
+            </button>
+            <button class="buttontestbig"@onclick="@(() => _envoiCarte = true)" style="background:#BA4625 ">
+                <img src="Icon/send.svg" />
+            </button>
+            <button class="buttontestbig" @onclick="@(() => munchkinService.DefausseCarte(Carte))" style="background:#625956;">
+                <img src="Icon/delete.svg" />
+            </button>
+        </div>
+    </MatDialogContent>
+</MatDialog>
+
+@*Envoi d'une Carte*@
+<MatDialog CanBeClosed="true" @bind-IsOpen="@_envoiCarte">
+    <MatDialogContent>
+        <div style="padding:50px; display:inline-flex;">
+            @foreach (Joueur joueur in munchkinService.Joueurs.Except(new List<Joueur> { Joueur }))
+            {
+                <button class="menu-button-small" @onclick="@(() => EnvoyeCarte(Carte,joueur))" style="float: left;">
+                    <img src="Icon/user.svg" class="menu-image-small" />
+                    <p class="menu-txt-small">@joueur.Nom</p>
+                </button>
+            }
+        </div>
+    </MatDialogContent>
+</MatDialog>
+
+
+<style>
+
+    .demo-mat-card:hover .buttontest {
+        display: block;
+    }
+
+    .buttontest {
+        border-radius: 10px;
+        border: none;
+        display: none;
+        height: 35px;
+        width: 35px;
+        margin: 5px;
+    }
+
+    .buttontestbig {
+        border-radius: 20px;
+        border: none;
+        height: 75px;
+        padding: 20px;
+        width: 75px;
+        margin: 15px;
+    }
+</style>

@@ -1,0 +1,14 @@
+﻿@namespace Munchkin.Components
+
+    <div class="flex-container-horizontal " style=" padding:50px; display:inline-flex">
+        <MatCard Style="background-color:black" class="demo-mat-card" @onclick="() => OnCardTypeSelected(typeof(CarteTresor))">
+            <MatCardContent Style="position: relative; width: 100%;">
+                <img style="height:200px;" src="/Cartes/Tresor/Dos.png">
+            </MatCardContent>
+        </MatCard>
+        <MatCard Style="background-color:black" class="demo-mat-card" @onclick="() => OnCardTypeSelected(typeof(CarteDonjon))">
+            <MatCardContent Style="position: relative; width: 100%;">
+                <img style="height:200px;" src="/Cartes/Donjon/Dos.png">
+            </MatCardContent>
+        </MatCard>
+    </div>

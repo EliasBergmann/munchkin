@@ -1,0 +1,95 @@
+﻿@namespace Munchkin.Components
+@*Cartes Equipement*@
+@if ((JoueurCible != null) && (JoueurCible.Equipement != null))
+{
+    <div id="maincontainer" class="mat-layout-grid">
+        <div class="flex-container-horizontal">
+            @foreach (Carte carte in JoueurCible.Main)
+            {
+                <MatCard Style="background-color:black" class="demo-mat-card">
+                    <MatCardContent Style="position: relative; width: 100%;">
+                        <img style="height:180px;" @onclick="@(() => AfficheCarteEnGrand(carte))" src="@(carte.EstVisible ? @carte.ImageURL : carte is CarteDonjon ? "/Cartes/Donjon/Dos.png" : "/Cartes/Tresor/Dos.png" )">
+                        <div class="flex-container" style="transform: translateX(-50%); height:unset; left: 50%; bottom : 20%; position: absolute; background-color: transparent;">
+                            <button class="buttontest" style="background:#BA4625 ">
+                                <img src=@(carte.EstVisible ? "Icon/hidden.svg" : "Icon/visible.svg") @onclick="@(() => carte.EstVisible = !carte.EstVisible )" />
+                            </button>
+
+                            <button class="buttontest" @onclick="@(() => JoueurCible.EnvoyeCarte(carte,JoueurRegardant))" style="background:#25793D">
+                                <img src="Icon/steal.svg" />
+                            </button>
+                        </div>
+                    </MatCardContent>
+                </MatCard>
+            }
+        </div>
+    </div>
+
+    <div id="equipementcontainer" class="mat-layout-grid">
+        <div class="flex-container-horizontal">
+            @foreach (Carte carte in JoueurCible.Equipement)
+            {
+                <MatCard Style="background-color:black" class="demo-mat-card">
+                    <MatCardContent Style="position: relative; width: 100%;">
+                        <img style="height:180px; opacity:@(carte.Activee ? "1" : "0.5")" @onclick="@(() => AfficheCarteEnGrand(carte))" src=@carte.ImageURL />
+                        <div class="flex-container" style="transform: translateX(-50%); height:unset; left: 50%; bottom : 30%; position: absolute; background-color: transparent;">
+                            <button class="buttontest" @onclick="@(() => JoueurCible.EnvoyeCarte(carte,JoueurRegardant))" style="background:#25793D">
+                                <img src="Icon/steal.svg" />
+                            </button>
+                        </div>
+                    </MatCardContent>
+                </MatCard>
+            }
+        </div>
+    </div>
+}
+
+@if (_carteAffichee != null)
+{
+    <MatDialog @bind-IsOpen="_afficheCarteEnGrand">
+        <MatDialogContent Style="background:black">
+            @if (JoueurCible.Equipement.Contains(_carteAffichee))
+            {
+                <MatCard Style="background-color:black" class="demo-mat-card">
+                    <MatCardContent Style="position: relative; width: 100%;">
+                        <img style="height:500px ; width:350px opacity:@(_carteAffichee.Activee ? "1" : "0.5")" @onclick="@(() => _afficheCarteEnGrand = false)" src=@_carteAffichee.ImageURL/>
+                    </MatCardContent>
+                </MatCard>
+            }
+            else
+            {
+                <MatCard Style="background-color:black" class="demo-mat-card">
+                    <MatCardContent Style="position: relative; width: 100%;">
+                        <img style="height:500px ; width:350px" @onclick="@(() => _afficheCarteEnGrand = false)" src="@(_carteAffichee.EstVisible ? _carteAffichee.ImageURL : _carteAffichee is CarteDonjon ? "/Cartes/Donjon/Dos.png" : "/Cartes/Tresor/Dos.png" )">
+                        <div class="flex-container-horizontal">
+                            <button class="buttontestbig" style="background:#BA4625 ">
+                                <img src=@(_carteAffichee.EstVisible ? "Icon/hidden.svg" : "Icon/visible.svg") @onclick="@(() => _carteAffichee.EstVisible = !_carteAffichee.EstVisible )" />
+                            </button>
+
+                            <button class="buttontestbig" @onclick="@(() => JoueurCible.EnvoyeCarte(_carteAffichee,JoueurRegardant))" style="background:#25793D">
+                                <img src="Icon/steal.svg" />
+                            </button>
+                        </div>
+                    </MatCardContent>
+                </MatCard>
+            }
+        </MatDialogContent>
+    </MatDialog>
+}
+
+
+
+
+
+
+<style>
+
+    #equipementcontainer {
+        padding: 5px;
+        margin: 10px;
+    }
+
+    #maincontainer {
+        padding: 5px;
+        margin: 10px;
+    }
+</style>
