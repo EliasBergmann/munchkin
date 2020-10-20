@@ -162,13 +162,13 @@ namespace Munchkin.Data
         {
             for (int i = 1; i <= 191; i++)
             {
-                if ((i != 117) && (i != 116) && (i != 118))
+                if ((i != 117) && (i != 116) && (i != 118) && (i != 3))
                     PiocheCartesTresor.Add(new CarteTresor(i) { Titre = "Carte " + i });
             }
 
             for (int i = 1; i <= 259; i++)
             {
-                if ((i != 23) && (i != 24) && (i != 25) && (i != 225) && (i != 226) && (i != 227) && (i != 55) &&(i != 132))
+                if ((i != 23) && (i != 20) && (i != 24) && (i != 25) && (i != 114) && (i != 225) && (i != 226) && (i != 227) && (i != 55) &&(i != 132))
                     PiocheCartesDonjon.Add(new CarteDonjon(i) { Titre = "Carte " + i });
             }
 
