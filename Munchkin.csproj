@@ -6,16 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Components\Joueur\VueJoueur.razor.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Remove="Components\Joueur\VueJoueur.razor" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Remove="Components\Fenetres\Dice.razor~RF20e3039.TMP" />
-    <None Remove="Components\Joueur\VueJoueurCirculaire.razor.cs~RF5f5df0.TMP" />
   </ItemGroup>
 
   <ItemGroup>

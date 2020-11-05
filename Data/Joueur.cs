@@ -11,19 +11,35 @@ namespace Munchkin.Data
 {
     public class Joueur
     {
-        private readonly MunchkinService _munchkinService;
+        #region Constructor
+        public Joueur(Partie partie)
+        {
+            Partie = partie;
+            Equipement.CollectionChanged += Jeu_CollectionChanged;
+            Main.CollectionChanged += Jeu_CollectionChanged;
+        }
+
+
+
+        #endregion
+
+        #region Private Properties
+
         private int _niveau = 1;
         private string _nom = string.Empty;
         private int _forceObjets = 0;
+        #endregion
 
+        #region Public Properties
         public ObservableCollection<Carte> Equipement { get; set; } = new ObservableCollection<Carte>();
         public ObservableCollection<Carte> Main { get; set; } = new ObservableCollection<Carte>();
+        public Partie Partie { get; }
 
         [Required]
         [StringLength(12, ErrorMessage = "Le Nom choisi est trop long.")]
-        public string Nom 
+        public string Nom
         {
-            get => _nom; 
+            get => _nom;
             set
             {
                 if (value != _nom)
@@ -33,12 +49,13 @@ namespace Munchkin.Data
                 }
             }
         }
-        public int Niveau 
+
+        public int Niveau
         {
             get => _niveau;
             set
             {
-                if(value != _niveau)
+                if (value != _niveau)
                 {
                     _niveau = value;
                     OnJoueurAChange();
@@ -48,7 +65,7 @@ namespace Munchkin.Data
 
         public int ForceObjets
         {
-            get => _forceObjets; 
+            get => _forceObjets;
             set
             {
                 if (value != _forceObjets)
@@ -57,17 +74,12 @@ namespace Munchkin.Data
                     OnJoueurAChange();
                 }
             }
-        } 
+        }
 
         public int PuissanceTotale => Niveau + ForceObjets;
+        #endregion
 
-        public Joueur(MunchkinService  munchkinService)
-        {
-            _munchkinService = munchkinService;
-            Equipement.CollectionChanged += Jeu_CollectionChanged;
-            Main.CollectionChanged += Jeu_CollectionChanged;
-        }    
-
+        #region Private Methods
         private void OnJoueurAChange()
         {
             JoueurAChange?.Invoke(this, null);
@@ -76,12 +88,14 @@ namespace Munchkin.Data
         private void Jeu_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             JeuAChange?.Invoke(this, null);
-            _munchkinService.NotifieCartesOntChanges();
+            Partie.NotifieCartesOntChanges();
         }
+        #endregion
 
+        #region Public Methods
         public void NouvelleCarte(Carte carte)
         {
-            _munchkinService.TransfertCarte(carte,null,this);
+            Partie.TransfertCarte(carte, null, this);
         }
 
         public void PoserCarte(Carte carte)
@@ -92,7 +106,7 @@ namespace Munchkin.Data
 
         public void EnvoyeCarte(Carte carte, Joueur receveur)
         {
-            _munchkinService.TransfertCarte(carte, this, receveur);
+            Partie.TransfertCarte(carte, this, receveur);
         }
 
         public void BougeCarteEquipement(int oldIndex, int newIndex)
@@ -111,7 +125,7 @@ namespace Munchkin.Data
             Carte carte = Main.ElementAt(oldIndex);
 
             Main.Remove(carte);
-            Main.Insert(newIndex,carte);
+            Main.Insert(newIndex, carte);
 
             JeuAChange?.Invoke(this, null);
         }
@@ -123,10 +137,16 @@ namespace Munchkin.Data
             else if (Equipement.Contains(carte))
                 Equipement.Remove(carte);
 
-            _munchkinService.DefausseCarte(carte);
+            Partie.DefausseCarte(carte);
         }
+        #endregion
 
+        #region Events
         public event EventHandler JeuAChange;
         public event EventHandler JoueurAChange;
+
+        #endregion
+
+
     }
 }

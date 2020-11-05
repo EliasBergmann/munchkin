@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -20,6 +21,9 @@ namespace Munchkin.Data
         #endregion
 
         #region Public Properties
+
+        [Required]
+        [StringLength(15, ErrorMessage = "Le Nom choisi est trop long.")]
         /// <summary>
         /// Nom de la partie
         /// </summary>
@@ -67,10 +71,30 @@ namespace Munchkin.Data
         /// Ajoute un nouveau joueur à la partie
         /// </summary>
         /// <param name="joueur">Joueur à ajouer</param>
-        public void AjouteUnNouveauJoueur(Joueur joueur)
+        public void AjouteJoueur(Joueur joueur)
         {
             _joueurs.Add(joueur);
             DistribueCartes(joueur);
+        }
+
+        /// <summary>
+        /// Ajoute un nouveau joueur à la partie
+        /// </summary>
+        /// <param name="joueur">Joueur à ajouer</param>
+        public void SupprimeJoueur(Joueur joueur)
+        {
+            foreach(Carte carte in joueur.Equipement)
+            {
+                DefausseCarte(carte);
+            }
+
+            foreach (Carte carte in joueur.Main)
+            {
+                DefausseCarte(carte);
+            }
+
+            _joueurs.Remove(joueur);
+
         }
 
         /// <summary>
@@ -150,6 +174,11 @@ namespace Munchkin.Data
                 joueur.NouvelleCarte(carte);
         }
 
+        public void NotifieCartesOntChanges()
+        {
+            CartesOntChanges?.Invoke(null, null);
+        }
+
         #endregion
 
 
@@ -203,6 +232,9 @@ namespace Munchkin.Data
         #region Events
         public event EventHandler CartesVisiblesOntChanges;
         public event EventHandler JoueursOntChanges;
+
+        public event EventHandler CartesOntChanges;
+        public event EventHandler AfficheResultat;
         #endregion
     }
 }

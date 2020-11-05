@@ -14,59 +14,118 @@ namespace Munchkin.Pages
 {
     public partial class Index : ComponentBase
     {
-        [Inject] MunchkinService munchkinService { get; set; }
-        [Inject] IJSRuntime jSRuntime { get; set; }
+        [Inject] MunchkinService MunchkinService { get; set; }
+        [Inject] IJSRuntime JSRuntime { get; set; }
 
-        private Joueur _joueurSelectionne;
+
         private bool _selectionneJoueur = false;
-        private bool _creeNouveauJoueur = false;
-        private Joueur _joueur;
+        private bool _selectionnePartie = false;
 
-        private Dictionary<string, object> InputAttributes { get; set; } = new Dictionary<string, object>()
+        private bool _creeNouveauJoueur = false;
+        private bool _creeNouvellePartie = false;
+
+        private bool _vueJoueur = false;
+
+
+        private Partie _partieSelectionne;
+        private Joueur _joueurSelectionne;
+
+
+        private Dictionary<string, object> _nomJoueurInputAttributes { get; set; } = new Dictionary<string, object>()
         {
-            { "id", "textinput" },
+            { "id", "nomJoueurTextInput" },
+            { "autocomplete", "off"}
+        };
+
+        private Dictionary<string, object> _nomPartieInputAttributes { get; set; } = new Dictionary<string, object>()
+        {
+            { "id", "nomPartieTextInput" },
             { "autocomplete", "off"}
         };
 
 
-        private void JoueurSelectionne(Joueur joueur)
+        private void SelectionneJoueur(Joueur joueur)
         {
             _joueurSelectionne = joueur;
             _selectionneJoueur = false;
+
+            _vueJoueur = true;
         }
 
-        private async Task NouvellePartie()
+        private void SupprimeJoueur(Joueur joueur)
         {
-            munchkinService.Recommence();
-            await CreeNouveauJoueur();
+            _partieSelectionne.SupprimeJoueur(joueur);
+        }
+
+        private void SelectionnePartie(Partie partie)
+        {
+            _partieSelectionne = partie;
+            _selectionnePartie = false;
+            _selectionneJoueur = true;
+        }
+
+        private void SupprimePartie(Partie partie)
+        {
+            MunchkinService.SupprimePartie(partie);
+
+            if(!MunchkinService.Parties.Any())
+            {
+                _selectionnePartie = false;
+            }
         }
 
         private async Task CreeNouveauJoueur()
         {
-            _joueur = new Joueur(munchkinService);
-            _selectionneJoueur = false;
+            _joueurSelectionne = new Joueur(_partieSelectionne);
             _creeNouveauJoueur = true;
+            _selectionneJoueur = false;
+
+            StateHasChanged();
+            await Task.Delay(100);
+            await JavaScriptLibrary.FocusAsync("nomJoueurTextInput", JSRuntime);
+        }
+
+        private async Task CreeNouvellePartie()
+        {
+            _partieSelectionne = new Partie();
+            _selectionnePartie = false;
+            _creeNouvellePartie = true;
+
             StateHasChanged();
 
             await Task.Delay(100);
-            await JavaScriptLibrary.FocusAsync("textinput", jSRuntime);
-        }
-
-        private void ExitClicked()
-        {
-            _selectionneJoueur = false;
-            _joueurSelectionne = null;
+            await JavaScriptLibrary.FocusAsync("nomPartieTextInput", JSRuntime);
         }
 
         private void CreationNouveauJoueur()
         {
-            if(munchkinService.Joueurs.FirstOrDefault(item => item.Nom == _joueur.Nom) == null)
+            if(!_partieSelectionne.Joueurs.Any(item => item.Nom == _joueurSelectionne.Nom))
             {
-                munchkinService.AjouteUnNouveauJoueur(_joueur);
-
+                _partieSelectionne.AjouteJoueur(_joueurSelectionne);
                 _creeNouveauJoueur = false;
-                _joueurSelectionne = _joueur;
+
+                _vueJoueur = true;
             }
+        }
+
+        private async Task CreationNouvellePartie()
+        {
+            if (!MunchkinService.Parties.Any(item => item.Nom == _partieSelectionne.Nom))
+            {
+                MunchkinService.AjouteNouvellePartie(_partieSelectionne);
+                _creeNouvellePartie = false;
+                await CreeNouveauJoueur();
+            }
+        }
+
+        private void VueJoueur_ExitClicked()
+        {
+
+            _vueJoueur = false;
+
+            _selectionneJoueur = false;
+            _joueurSelectionne = null;
+            _partieSelectionne = null;
         }
     }
 }

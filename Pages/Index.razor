@@ -4,64 +4,108 @@
 @using Munchkin.Components
 @using MatBlazor
 
-@if (_joueurSelectionne == null)
-{
-    
-    <div style="margin:150px; display: grid;">
 
-        <img src="Images/munchkin.png" class="center" style="width: 600px;" />
+@if(_vueJoueur)
+{
+    <VueJoueur ExitClicked="VueJoueur_ExitClicked" Joueur="_joueurSelectionne"></VueJoueur>
+}
+else
+{
+    <div style="margin-top:150px; display: grid;">
+
+        <img src="Images/munchkin-logo.png" class="center" style="width: 600px;" />
 
         <div class="center" style="padding:50px">
 
-            @if(!_selectionneJoueur && !_creeNouveauJoueur)
+            @*Page Acceuil*@
+            @if (!_selectionneJoueur && !_creeNouveauJoueur && !_creeNouvellePartie && !_selectionnePartie)
             {
-            <button class="menu-button" @onclick="() => _selectionneJoueur = true" style="float: left;">
-                <img src="Icon/play.svg" class="menu-image" />
-                <p class="menu-txt">Rejoindre</p>
-            </button>
+                @if (MunchkinService.Parties.Any())
+                {
+                    <button class="menu-button-light" @onclick="() => _selectionnePartie = true" style="float: left;">
+                        <img src="Icon/play.svg" class="menu-image" />
+                        <p class="menu-txt">Rejoindre</p>
+                    </button>
 
-            <button class="menu-button" @onclick="() => NouvellePartie()" style="float: right;">
-                <img src="Icon/plus-black.svg" class="menu-image" />
-                <p class="menu-txt">Nouvelle Partie</p>
-            </button>
+                }
+                <button class="menu-button-dark" @onclick="() => CreeNouvellePartie()" style="float: right;">
+                    <img src="Icon/plus-isabelline.svg" class="menu-image" />
+                    <p class="menu-txt">Nouvelle Partie</p>
+                </button>
             }
-            else if(_selectionneJoueur)
+            @*Selection d'un Joueur*@
+            else if (_selectionneJoueur)
             {
-            <div style="display: flex; flex-flow: row wrap; justify-content: center;">
-                @foreach (Joueur joueur in munchkinService.Joueurs)
+                <div style="display: flex; flex-flow: row wrap; justify-content: center;">
+                    @foreach (Joueur joueur in _partieSelectionne.Joueurs)
                     {
-                <button class="menu-button" @onclick="@(() =>JoueurSelectionne(joueur))">
-                    <img src="Icon/user.svg" class="menu-image" />
-                    <p class="menu-txt">@joueur.Nom</p>
-                </button>
-                    }
-                <button style="background-color:#3C2418" class="menu-button" @onclick="@(() => CreeNouveauJoueur())">
-                    <img src="Icon/plus-white.svg" class="menu-image" />
-                    <p class="menu-txt" style="color:white;">Nouveau Joueur</p>
-                </button>
-            </div>
-            }
-            else
-            {
-        <EditForm  Model="@_joueur" OnValidSubmit="CreationNouveauJoueur">
-            <DataAnnotationsValidator />
-            <div asp-validation-summary="All" class="text-danger"></div>
+                        <div style="display: grid">
+                            <button class="menu-button-light" style="border-radius:15px 15px 0px 0px" @onclick="@(() =>SelectionneJoueur(joueur))">
+                                <img src="Icon/user.svg" class="menu-image" />
+                                <p class="menu-txt">@joueur.Nom</p>
+                            </button>
+                            <button class="delete-button" @onclick="@(() =>SupprimeJoueur(joueur))">
+                                <img src="Icon/delete-isabelline.svg" class="delete-image" />
+                            </button>
+                        </div>
 
-            @*Nouveau Joueur *@
-            <div id="test" class="center" style="width:600px;">
-                <InputText @attributes="InputAttributes" class="menu-txt" style="width: 475px; border: solid; padding-left: 5px; border-radius: 5px;" placeholder="Nom du joueur" @bind-Value="_joueur.Nom" />
-                <button type="submit" class="menu-txt" style="background-color: #3C2418;  border-radius: 10px; margin: 5px; border: none;width: 60px; height: 50px; color: white;">OK</button>
-                <ValidationMessage For="@(() => _joueur.Nom)" />
-            </div>
-        </EditForm>
+                    }
+                    <button class="menu-button-dark" @onclick="@(() => CreeNouveauJoueur())">
+                        <img src="Icon/plus-white.svg" class="menu-image" />
+                        <p class="menu-txt" style="color:white;">Nouveau Joueur</p>
+                    </button>
+                </div>
+            }
+            @*Selection d'une Partie*@
+            else if (_selectionnePartie)
+            {
+                <div style="display: flex; flex-flow: row wrap; justify-content: center;">
+                    @foreach (Partie partie in MunchkinService.Parties)
+                    {
+                        <div style="display: grid">
+                            <button class="menu-button-light" style="border-radius:15px 15px 0px 0px" @onclick="@(() => SelectionnePartie(partie))">
+                                <img src="Icon/team.svg" class="menu-image" />
+                                <p class="menu-txt">@partie.Nom</p>
+                            </button>
+                            <button class="delete-button" @onclick="@(() =>SupprimePartie(partie))">
+                                <img src="Icon/delete-isabelline.svg" class="delete-image" />
+                            </button>
+                        </div>
+                    }
+                </div>
+            }
+            @*Création d'un nouveau Joueur*@
+            else if (_creeNouveauJoueur)
+            {
+            <EditForm Model="@_joueurSelectionne" OnValidSubmit="CreationNouveauJoueur">
+                <DataAnnotationsValidator />
+                <div asp-validation-summary="All" class="text-danger"></div>
+                <div id="nomJoueur" class="center" style="width:600px;">
+                    <InputText @attributes="_nomJoueurInputAttributes" class="menu-txt" style="width: 475px; height:50px; border: solid; padding-left: 5px; border-radius: 5px;" placeholder="Nom du joueur" @bind-Value="_joueurSelectionne.Nom" />
+                    <button type="submit" class="menu-txt" style="background-color: #252323; border-radius: 5px; margin: 5px; border: none;width: 65px; height: 50px; color: #F5F1ED;">OK</button>
+                    <ValidationMessage For="@(() => _joueurSelectionne.Nom)" />
+                </div>
+            </EditForm>
+            }
+            @*Création d'une nouvelle Partie*@
+            else if (_creeNouvellePartie)
+            {
+            <EditForm Model="@_partieSelectionne" OnValidSubmit="CreationNouvellePartie">
+                <DataAnnotationsValidator />
+                <div asp-validation-summary="All" class="text-danger"></div>
+
+                @*Nouvelle Partie *@
+                <div id="nomPartie" class="center" style="width:600px;">
+                    <InputText @attributes="_nomPartieInputAttributes" class="menu-txt"  style="width: 475px; height:50px; border: solid; border-color:#252323; padding-left: 5px; border-radius: 5px;" placeholder="Nom de la partie" @bind-Value="_partieSelectionne.Nom" />
+                    <button type="submit" class="menu-txt" style="background-color:#252323;  border-radius: 5px; margin: 5px; border: none; width: 65px; height: 50px; color: #F5F1ED;">OK</button>
+                    <ValidationMessage For="@(() => _partieSelectionne.Nom)" />
+                </div>
+            </EditForm>
             }
         </div>
     </div>
 }
-else
-{
-    <VueJoueurCirculaire ExitClicked="ExitClicked" Joueur="_joueurSelectionne" />
-}
+
 
 
 
@@ -71,18 +115,41 @@ else
         padding: 20px;
     }
 
-    .menu-button {
-        color: #3C2418;
-        background-color: transparent;
-        border: solid;
+    .menu-button-light {
+        color: #252323;
+        background-color: #DAD2BC;
+        border: hidden ;
         margin: 20px;
-        width: 240px;
-        border-radius: 40px;
+        width: 200px;
+        border-radius: 15px;
+    }
+
+    .menu-button-dark {
+        color: #F5F1ED;
+        background-color: #252323;
+        border: hidden;
+        margin: 20px;
+        width: 200px;
+        border-radius: 15px;
+    }
+
+    .delete-button {
+        color: #F5F1ED;
+        background-color: #70798C;
+        border: hidden;
+        margin: -15px 20px 20px 20px;
+        width: 200px;
+        border-radius: 0px 0px 15px 15px;
     }
 
     .menu-image {
-        height: 60px;
-        margin: 20px
+        height: 50px;
+        margin: 15px
+    }
+
+    .delete-image {
+        height: 25px;
+        margin: 10px
     }
 
     .mdc-dialog .mdc-dialog__surface {
@@ -90,7 +157,7 @@ else
     }
 
     .menu-txt {
-        font-size: 26px;
+        font-size: 22px;
     }
 
     .form-control.invalid {

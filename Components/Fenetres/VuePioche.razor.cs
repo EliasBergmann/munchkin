@@ -10,8 +10,6 @@ namespace Munchkin.Components
 {
     public partial class VuePioche : ComponentBase
     {
-        [Inject] MunchkinService MunchkinService { get; set; }
-
         [Parameter] public Joueur Joueur { get; set; }
 
         [Parameter] public Type DefausseType 
@@ -30,13 +28,14 @@ namespace Munchkin.Components
 
         private Carte _carteAffichee = null;
         private bool _afficheCarteEnGrand = false;
+        private Partie _partie => Joueur.Partie;
 
         private IEnumerable<Carte> _cartesDonjonAffichees
         {
             get
             {
                 for (int i = _nbCartesDonjonAffichees - 1; i >= 0; i--)
-                    yield return MunchkinService.PiocheCartesDonjon.ElementAt(i);
+                    yield return _partie.PiocheCartesDonjon.ElementAt(i);
             }
         }
 
@@ -45,7 +44,7 @@ namespace Munchkin.Components
             get
             {
                 for (int i = _nbCartesTresorAffichees - 1; i >= 0; i--)
-                    yield return MunchkinService.PiocheCartesTresor.ElementAt(i);
+                    yield return _partie.PiocheCartesTresor.ElementAt(i);
             }
         }
 
@@ -55,7 +54,7 @@ namespace Munchkin.Components
 
         private void PrendCarteDePiocheTresor(CarteTresor carte, Joueur joueur)
         {
-            MunchkinService.PrendCarteDePiocheTresor(carte, joueur);
+            _partie.PrendCarteDePiocheTresor(carte, joueur);
             _nbCartesTresorAffichees--;
             _afficheCarteEnGrand = false;
             StateHasChanged();
@@ -63,7 +62,7 @@ namespace Munchkin.Components
 
         private void PrendCarteDePiocheDonjon(CarteDonjon carte, Joueur joueur)
         {
-            MunchkinService.PrendCarteDePiocheDonjon(carte, joueur);
+            _partie.PrendCarteDePiocheDonjon(carte, joueur);
             _nbCartesDonjonAffichees--;
             _afficheCarteEnGrand = false;
             StateHasChanged();
@@ -71,20 +70,20 @@ namespace Munchkin.Components
 
         public void BougeCarteDonjon(int oldIndex, int newIndex)
         {
-            CarteDonjon oldCarte = MunchkinService.PiocheCartesDonjon.ElementAt(oldIndex);
+            CarteDonjon oldCarte = _partie.PiocheCartesDonjon.ElementAt(oldIndex);
 
-            MunchkinService.PiocheCartesDonjon.Remove(oldCarte);
-            MunchkinService.PiocheCartesDonjon.Insert(newIndex, oldCarte);
+            _partie.PiocheCartesDonjon.Remove(oldCarte);
+            _partie.PiocheCartesDonjon.Insert(newIndex, oldCarte);
 
             StateHasChanged();
         }
 
         public void BougeCarteTresor(int oldIndex, int newIndex)
         {
-            CarteTresor oldCarte = MunchkinService.PiocheCartesTresor.ElementAt(oldIndex);
+            CarteTresor oldCarte = _partie.PiocheCartesTresor.ElementAt(oldIndex);
 
-            MunchkinService.PiocheCartesTresor.Remove(oldCarte);
-            MunchkinService.PiocheCartesTresor.Insert(newIndex, oldCarte);
+            _partie.PiocheCartesTresor.Remove(oldCarte);
+            _partie.PiocheCartesTresor.Insert(newIndex, oldCarte);
 
             StateHasChanged();
         }

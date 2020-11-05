@@ -4,7 +4,7 @@
 @*Carte Petite*@
 <MatCard Style="background-color:black" class="demo-mat-card">
     <MatCardContent Style="position: relative; width: 100%;">
-        <img @onclick="() => _afficheCarte = true" style="height:180px" src=@Carte.ImageURL>
+        <img @onclick="() => _afficheCarte = true" style="height:180px; border-radius:5px;" src=@Carte.ImageURL>
         <div class="flex-container"
              style="transform: translateX(-50%); height:unset; left: 50%; bottom : 10%; position: absolute; background-color: transparent;">
             <button class="buttontest" @onclick="@(() => Joueur.PoserCarte(Carte))" style="background:#25793D">
@@ -23,7 +23,7 @@
 @*Carte En Grand*@
 <MatDialog @bind-IsOpen="@_afficheCarte">
     <MatDialogContent Style="background:black">
-        <img @onclick="() => _afficheCarte = false" style="height:500px ; width:350px" src=@Carte.ImageURL>
+        <img @onclick="() => _afficheCarte = false" style="height:500px; border-radius:5px; width:350px" src=@Carte.ImageURL>
         <div class="flex-container-horizontal">
             <button class="buttontestbig" @onclick="@(() => Joueur.PoserCarte(Carte))" style="background:#25793D">
                 <img src="Icon/helmet-black.svg" />
@@ -42,7 +42,7 @@
 <MatDialog CanBeClosed="true" @bind-IsOpen="_envoiCarte">
     <MatDialogContent>
         <div style="padding:50px; display:inline-flex;">
-            @foreach (Joueur joueur in munchkinService.Joueurs.Except(new List<Joueur> { Joueur }))
+            @foreach (Joueur joueur in _partie.Joueurs.Except(new List<Joueur> { Joueur }))
             {
                 <button class="menu-button-small" @onclick="@(() => EnvoyeCarte(Carte,joueur))" style="float: left;">
                     <img src="Icon/user.svg" class="menu-image-small" />
