@@ -26,10 +26,9 @@ namespace Munchkin.Pages
 
         private bool _vueJoueur = false;
 
-
         private Partie _partieSelectionne;
         private Joueur _joueurSelectionne;
-
+        private Partie _partieASupprimer;
 
         private Dictionary<string, object> _nomJoueurInputAttributes { get; set; } = new Dictionary<string, object>()
         {
@@ -64,14 +63,9 @@ namespace Munchkin.Pages
             _selectionneJoueur = true;
         }
 
-        private void SupprimePartie(Partie partie)
+        private void DemandeSupprimePartie(Partie partie)
         {
-            MunchkinService.SupprimePartie(partie);
-
-            if(!MunchkinService.Parties.Any())
-            {
-                _selectionnePartie = false;
-            }
+            _partieASupprimer = partie;
         }
 
         private async Task CreeNouveauJoueur()
@@ -126,6 +120,18 @@ namespace Munchkin.Pages
             _selectionneJoueur = false;
             _joueurSelectionne = null;
             _partieSelectionne = null;
+        }
+
+        private void SupprimerPartie()
+        {
+            MunchkinService.SupprimePartie(_partieASupprimer);
+
+            if (!MunchkinService.Parties.Any())
+            {
+                _selectionnePartie = false;
+            }
+
+            _partieASupprimer = null;
         }
     }
 }

@@ -5,7 +5,7 @@
 @using MatBlazor
 
 
-@if(_vueJoueur)
+@if (_vueJoueur)
 {
     <VueJoueur ExitClicked="VueJoueur_ExitClicked" Joueur="_joueurSelectionne"></VueJoueur>
 }
@@ -67,7 +67,7 @@ else
                                 <img src="Icon/team.svg" class="menu-image" />
                                 <p class="menu-txt">@partie.Nom</p>
                             </button>
-                            <button class="delete-button" @onclick="@(() =>SupprimePartie(partie))">
+                            <button class="delete-button" @onclick="@(() =>DemandeSupprimePartie(partie))">
                                 <img src="Icon/delete-isabelline.svg" class="delete-image" />
                             </button>
                         </div>
@@ -77,33 +77,43 @@ else
             @*Création d'un nouveau Joueur*@
             else if (_creeNouveauJoueur)
             {
-            <EditForm Model="@_joueurSelectionne" OnValidSubmit="CreationNouveauJoueur">
-                <DataAnnotationsValidator />
-                <div asp-validation-summary="All" class="text-danger"></div>
-                <div id="nomJoueur" class="center" style="width:600px;">
-                    <InputText @attributes="_nomJoueurInputAttributes" class="menu-txt" style="width: 475px; height:50px; border: solid; padding-left: 5px; border-radius: 5px;" placeholder="Nom du joueur" @bind-Value="_joueurSelectionne.Nom" />
-                    <button type="submit" class="menu-txt" style="background-color: #252323; border-radius: 5px; margin: 5px; border: none;width: 65px; height: 50px; color: #F5F1ED;">OK</button>
-                    <ValidationMessage For="@(() => _joueurSelectionne.Nom)" />
-                </div>
-            </EditForm>
+                <EditForm Model="@_joueurSelectionne" OnValidSubmit="CreationNouveauJoueur">
+                    <DataAnnotationsValidator />
+                    <div asp-validation-summary="All" class="text-danger"></div>
+                    <div id="nomJoueur" class="center" style="width:600px;">
+                        <InputText @attributes="_nomJoueurInputAttributes" class="menu-txt" style="width: 475px; height:50px; border: solid; padding-left: 5px; border-radius: 5px;" placeholder="Nom du joueur" @bind-Value="_joueurSelectionne.Nom" />
+                        <button type="submit" class="menu-txt" style="background-color: #252323; border-radius: 5px; margin: 5px; border: none;width: 65px; height: 50px; color: #F5F1ED;">OK</button>
+                        <ValidationMessage For="@(() => _joueurSelectionne.Nom)" />
+                    </div>
+                </EditForm>
             }
             @*Création d'une nouvelle Partie*@
             else if (_creeNouvellePartie)
             {
-            <EditForm Model="@_partieSelectionne" OnValidSubmit="CreationNouvellePartie">
-                <DataAnnotationsValidator />
-                <div asp-validation-summary="All" class="text-danger"></div>
+                <EditForm Model="@_partieSelectionne" OnValidSubmit="CreationNouvellePartie">
+                    <DataAnnotationsValidator />
+                    <div asp-validation-summary="All" class="text-danger"></div>
 
-                @*Nouvelle Partie *@
-                <div id="nomPartie" class="center" style="width:600px;">
-                    <InputText @attributes="_nomPartieInputAttributes" class="menu-txt"  style="width: 475px; height:50px; border: solid; border-color:#252323; padding-left: 5px; border-radius: 5px;" placeholder="Nom de la partie" @bind-Value="_partieSelectionne.Nom" />
-                    <button type="submit" class="menu-txt" style="background-color:#252323;  border-radius: 5px; margin: 5px; border: none; width: 65px; height: 50px; color: #F5F1ED;">OK</button>
-                    <ValidationMessage For="@(() => _partieSelectionne.Nom)" />
-                </div>
-            </EditForm>
+                    @*Nouvelle Partie *@
+                    <div id="nomPartie" class="center" style="width:600px;">
+                        <InputText @attributes="_nomPartieInputAttributes" class="menu-txt" style="width: 475px; height:50px; border: solid; border-color:#252323; padding-left: 5px; border-radius: 5px;" placeholder="Nom de la partie" @bind-Value="_partieSelectionne.Nom" />
+                        <button type="submit" class="menu-txt" style="background-color:#252323;  border-radius: 5px; margin: 5px; border: none; width: 65px; height: 50px; color: #F5F1ED;">OK</button>
+                        <ValidationMessage For="@(() => _partieSelectionne.Nom)" />
+                    </div>
+                </EditForm>
             }
         </div>
     </div>
+
+    <MatDialog CanBeClosed="false" IsOpen="_partieASupprimer != null">
+        <MatDialogContent>
+            Voulez vous vraiment supprimmer cette partie ? 
+        </MatDialogContent>
+        <MatDialogActions>
+            <MatButton OnClick="() => _partieASupprimer = null">Non</MatButton>
+            <MatButton OnClick="SupprimerPartie">Oui</MatButton>
+        </MatDialogActions>
+    </MatDialog>
 }
 
 
@@ -118,7 +128,7 @@ else
     .menu-button-light {
         color: #252323;
         background-color: #DAD2BC;
-        border: hidden ;
+        border: hidden;
         margin: 20px;
         width: 200px;
         border-radius: 15px;
@@ -166,6 +176,7 @@ else
 
     .form-control.valid {
         border-color: transparent;
+        color: transparent;
     }
 
     .validation-message {
