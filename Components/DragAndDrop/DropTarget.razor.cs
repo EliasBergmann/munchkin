@@ -1,12 +1,10 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Munchkin.Service;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Munchkin.Components
 {
-    public partial class DropTarget<T>: ComponentBase
+    public partial class DropTarget<T> : ComponentBase
     {
         #region Inject
 

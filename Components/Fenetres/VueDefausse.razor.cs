@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Munchkin.Data;
-using Munchkin.Service;
 using System;
-using System.Collections.Generic;
 
 namespace Munchkin.Components
 {

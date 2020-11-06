@@ -1,10 +1,8 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Munchkin.Data;
-using Munchkin.Service;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Munchkin.Components
 {
@@ -12,12 +10,13 @@ namespace Munchkin.Components
     {
         [Parameter] public Joueur Joueur { get; set; }
 
-        [Parameter] public Type DefausseType 
+        [Parameter]
+        public Type DefausseType
         {
             get => _defausseType;
             set
             {
-                if(value != _defausseType)
+                if (value != _defausseType)
                 {
                     _nbCartesTresorAffichees = 0;
                     _nbCartesDonjonAffichees = 0;

@@ -1,13 +1,7 @@
-﻿using MatBlazor;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using Munchkin.Data;
-using Munchkin.Service;
-using Munchkin.Utils;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Munchkin.Pages
 {
@@ -36,8 +30,7 @@ namespace Munchkin.Pages
         private Joueur _joueur;
         private Joueur _joueurRegarde = null;
 
-        private bool _afficheDe = false;
-        private bool _showHand = true;
+        private bool _afficheMain = true;
         private bool _afficheAutreJoueur = false;
         private bool _affichePioche = false;
         private bool _afficheDefausse = false;

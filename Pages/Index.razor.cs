@@ -1,13 +1,10 @@
-﻿using MatBlazor;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using Munchkin.Data;
 using Munchkin.Service;
 using Munchkin.Utils;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Munchkin.Pages
@@ -93,7 +90,7 @@ namespace Munchkin.Pages
 
         private void CreationNouveauJoueur()
         {
-            if(!_partieSelectionne.Joueurs.Any(item => item.Nom == _joueurSelectionne.Nom))
+            if (!_partieSelectionne.Joueurs.Any(item => item.Nom == _joueurSelectionne.Nom))
             {
                 _partieSelectionne.AjouteJoueur(_joueurSelectionne);
                 _creeNouveauJoueur = false;

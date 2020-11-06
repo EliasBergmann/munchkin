@@ -1,16 +1,11 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Munchkin.Data;
-using Munchkin.Service;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Munchkin.Components
 {
     public partial class VueCarteVisible : ComponentBase
     {
-        [Parameter] public Joueur Joueur { get ; set;}
+        [Parameter] public Joueur Joueur { get; set; }
         [Parameter] public Carte Carte { get; set; }
 
         private bool _afficheCarteEnGrand;

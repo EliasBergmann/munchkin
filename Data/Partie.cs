@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Munchkin.Data
 {
@@ -61,8 +59,8 @@ namespace Munchkin.Data
         #endregion
 
         #region Private Properties
-        private ObservableCollection<Joueur> _joueurs = new ObservableCollection<Joueur>();
-        private ObservableCollection<Carte> _cartesVisibles = new ObservableCollection<Carte>();
+        private readonly ObservableCollection<Joueur> _joueurs = new ObservableCollection<Joueur>();
+        private readonly ObservableCollection<Carte> _cartesVisibles = new ObservableCollection<Carte>();
         #endregion
 
         #region Public Methods
@@ -83,7 +81,7 @@ namespace Munchkin.Data
         /// <param name="joueur">Joueur à ajouer</param>
         public void SupprimeJoueur(Joueur joueur)
         {
-            foreach(Carte carte in joueur.Equipement)
+            foreach (Carte carte in joueur.Equipement)
             {
                 DefausseCarte(carte);
             }
@@ -197,7 +195,7 @@ namespace Munchkin.Data
 
             for (int i = 1; i <= 259; i++)
             {
-                if ((i != 23) && (i != 20) && (i != 24) && (i != 25) && (i != 114) && (i != 225) && (i != 226) && (i != 227) && (i != 55) &&(i != 132))
+                if ((i != 23) && (i != 20) && (i != 24) && (i != 25) && (i != 114) && (i != 225) && (i != 226) && (i != 227) && (i != 55) && (i != 132))
                     PiocheCartesDonjon.Add(new CarteDonjon(i) { Titre = "Carte " + i });
             }
 

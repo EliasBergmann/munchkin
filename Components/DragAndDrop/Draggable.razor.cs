@@ -4,7 +4,7 @@ using Munchkin.Service;
 
 namespace Munchkin.Components
 {
-    public partial class Draggable<T>: ComponentBase
+    public partial class Draggable<T> : ComponentBase
     {
         #region Constructor
 

@@ -136,7 +136,7 @@
 </div>
 
 <div>
-    @if (_showHand)
+    @if (_afficheMain)
     {
         @*Cartes Main*@
         <div class="mat-layout-grid bottomcontainer">
@@ -151,7 +151,7 @@
                 }
             </div>
         </div>
-        <button @onclick="() =>_showHand = !_showHand" class="togglebutton">
+        <button @onclick="() =>_afficheMain = !_afficheMain" class="togglebutton">
             <div id="coloredDivTop">
                 <img src="Icon/hand-white.svg" style="height:40px" />
             </div>
@@ -175,7 +175,7 @@
                 }
             </div>
         </div>
-        <button @onclick="() =>_showHand = !_showHand" class="togglebutton">
+        <button @onclick="() =>_afficheMain = !_afficheMain" class="togglebutton">
             <div id="uncoloredDivTop">
                 <img src="/Icon/hand-grutto.svg" style="height:40px" />
             </div>
