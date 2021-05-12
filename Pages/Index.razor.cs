@@ -20,6 +20,7 @@ namespace Munchkin.Pages
 
         private bool _creeNouveauJoueur = false;
         private bool _creeNouvellePartie = false;
+        private bool _stephaneDoitPromettreDePerdre = false;
 
         private bool _vueJoueur = false;
 
@@ -89,6 +90,18 @@ namespace Munchkin.Pages
         }
 
         private void CreationNouveauJoueur()
+        {
+            if(_joueurSelectionne.Nom.ToLower().Contains("steph") || _joueurSelectionne.Nom.ToLower().Contains("stéph") || _joueurSelectionne.Nom.ToLower().Contains("buldo"))
+            {
+                _stephaneDoitPromettreDePerdre = true;
+            }
+            else
+            {
+                AjouerJoueur();
+            }
+        }
+
+        private void AjouerJoueur()
         {
             if (!_partieSelectionne.Joueurs.Any(item => item.Nom == _joueurSelectionne.Nom))
             {
