@@ -103,6 +103,7 @@ namespace Munchkin.Pages
 
         private void AjouerJoueur()
         {
+            _stephaneDoitPromettreDePerdre = false;
             if (!_partieSelectionne.Joueurs.Any(item => item.Nom == _joueurSelectionne.Nom))
             {
                 _partieSelectionne.AjouteJoueur(_joueurSelectionne);
